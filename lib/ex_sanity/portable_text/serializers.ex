@@ -1,7 +1,7 @@
 defmodule ExSanity.PortableText.Serializers do
   import Phoenix.HTML.Tag
 
-  alias LevelWeb.PortableText.{Utils}
+  alias ExSanity.PortableText.{Utils}
 
   @default_marks ["strong", "em", "code", "underline", "strike-through"]
 
@@ -47,7 +47,7 @@ defmodule ExSanity.PortableText.Serializers do
   end
 
   def image_serializer(asset = %{"asset" => %{"_ref" => _ref}}) do
-    url = LevelWeb.Sanity.Builder.build_image_url(asset)
+    url = ExSanity.AssetBuilder.build_image_url(asset)
     img_tag(url)
   end
 
@@ -60,7 +60,7 @@ defmodule ExSanity.PortableText.Serializers do
   end
 
   def render_children(children, mark_defs) do
-    Enum.map(children, fn child -> LevelWeb.PortableText.render_node(child, mark_defs) end)
+    Enum.map(children, fn child -> ExSanity.PortableText.render_node(child, mark_defs) end)
   end
 
   # Generates a map of anonymous functions which
