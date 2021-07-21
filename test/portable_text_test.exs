@@ -17,7 +17,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Hello!"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -40,7 +40,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Hello!"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -63,7 +63,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Hello!"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -94,7 +94,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Go here"
             }
           ],
-          "mark_defs" => [
+          "markDefs" => [
             %{
               "_key" => "04dd8390b9ed",
               "_type" => "link",
@@ -130,7 +130,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Let's talk!"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -153,7 +153,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Hello!"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -167,7 +167,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Let's talk!"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -223,7 +223,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Hello"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "h1"
         },
         %{
@@ -239,7 +239,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -255,7 +255,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -281,7 +281,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -297,7 +297,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 2,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -313,7 +313,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 2,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -329,7 +329,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -372,7 +372,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -388,7 +388,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 2,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -404,7 +404,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 2,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -420,7 +420,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 3,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -436,7 +436,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -484,7 +484,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -500,7 +500,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 2,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -516,7 +516,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 2,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -532,7 +532,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 3,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -548,7 +548,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 2,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -564,7 +564,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 3,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -578,7 +578,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "heading"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "h1"
         },
         %{
@@ -594,7 +594,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -650,7 +650,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Hello!"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -664,7 +664,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Let's talk!"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -688,7 +688,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Hello"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "h1"
         },
         %{
@@ -704,7 +704,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -720,7 +720,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -741,7 +741,7 @@ defmodule ExSanity.PortableTextTest do
                      "text" => "Hello"
                    }
                  ],
-                 "mark_defs" => [],
+                 "markDefs" => [],
                  "style" => "h1"
                },
                %{
@@ -749,7 +749,7 @@ defmodule ExSanity.PortableTextTest do
                  "_type" => "list",
                  "level" => 1,
                  "listItem" => "bullet",
-                 "mark_defs" => [],
+                 "markDefs" => [],
                  "children" => [
                    %{
                      "_key" => "7e94398f8aea",
@@ -764,7 +764,7 @@ defmodule ExSanity.PortableTextTest do
                      ],
                      "level" => 1,
                      "listItem" => "bullet",
-                     "mark_defs" => [],
+                     "markDefs" => [],
                      "style" => "normal"
                    },
                    %{
@@ -780,7 +780,7 @@ defmodule ExSanity.PortableTextTest do
                      ],
                      "level" => 1,
                      "listItem" => "bullet",
-                     "mark_defs" => [],
+                     "markDefs" => [],
                      "style" => "normal"
                    }
                  ]
@@ -801,7 +801,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Hello"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "h1"
         },
         %{
@@ -817,7 +817,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -833,7 +833,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 2,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -849,7 +849,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 2,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -870,7 +870,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Hello"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "h1"
         },
         %{
@@ -878,14 +878,14 @@ defmodule ExSanity.PortableTextTest do
           "_type" => "list",
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "children" => [
             %{
               "_key" => "7e94398f8aea",
               "_type" => "block",
               "level" => 1,
               "listItem" => "bullet",
-              "mark_defs" => [],
+              "markDefs" => [],
               "style" => "normal",
               "children" => [
                 %{
@@ -899,7 +899,7 @@ defmodule ExSanity.PortableTextTest do
                   "_type" => "list",
                   "level" => 2,
                   "listItem" => "bullet",
-                  "mark_defs" => [],
+                  "markDefs" => [],
                   "children" => [
                     %{
                       "_key" => "7e94398f8aea",
@@ -914,7 +914,7 @@ defmodule ExSanity.PortableTextTest do
                       ],
                       "level" => 2,
                       "listItem" => "bullet",
-                      "mark_defs" => [],
+                      "markDefs" => [],
                       "style" => "normal"
                     },
                     %{
@@ -930,7 +930,7 @@ defmodule ExSanity.PortableTextTest do
                       ],
                       "level" => 2,
                       "listItem" => "bullet",
-                      "mark_defs" => [],
+                      "markDefs" => [],
                       "style" => "normal"
                     }
                   ]
@@ -957,7 +957,7 @@ defmodule ExSanity.PortableTextTest do
               "text" => "Hello"
             }
           ],
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "h1"
         },
         %{
@@ -973,7 +973,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 1,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -989,7 +989,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 2,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -1005,7 +1005,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 2,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         },
         %{
@@ -1021,7 +1021,7 @@ defmodule ExSanity.PortableTextTest do
           ],
           "level" => 3,
           "listItem" => "bullet",
-          "mark_defs" => [],
+          "markDefs" => [],
           "style" => "normal"
         }
       ]
@@ -1042,7 +1042,7 @@ defmodule ExSanity.PortableTextTest do
                      "text" => "Hello"
                    }
                  ],
-                 "mark_defs" => [],
+                 "markDefs" => [],
                  "style" => "h1"
                },
                %{
@@ -1050,14 +1050,14 @@ defmodule ExSanity.PortableTextTest do
                  "_type" => "list",
                  "level" => 1,
                  "listItem" => "bullet",
-                 "mark_defs" => [],
+                 "markDefs" => [],
                  "children" => [
                    %{
                      "_key" => "7e94398f8aea",
                      "_type" => "block",
                      "level" => 1,
                      "listItem" => "bullet",
-                     "mark_defs" => [],
+                     "markDefs" => [],
                      "style" => "normal",
                      "children" => [
                        %{
@@ -1071,14 +1071,14 @@ defmodule ExSanity.PortableTextTest do
                          "_type" => "list",
                          "level" => 2,
                          "listItem" => "bullet",
-                         "mark_defs" => [],
+                         "markDefs" => [],
                          "children" => [
                            %{
                              "_key" => "7e94398f8aea",
                              "_type" => "block",
                              "level" => 2,
                              "listItem" => "bullet",
-                             "mark_defs" => [],
+                             "markDefs" => [],
                              "style" => "normal",
                              "children" => [
                                %{
@@ -1094,7 +1094,7 @@ defmodule ExSanity.PortableTextTest do
                              "_type" => "block",
                              "level" => 2,
                              "listItem" => "bullet",
-                             "mark_defs" => [],
+                             "markDefs" => [],
                              "style" => "normal",
                              "children" => [
                                %{
@@ -1108,14 +1108,14 @@ defmodule ExSanity.PortableTextTest do
                                  "_type" => "list",
                                  "level" => 3,
                                  "listItem" => "bullet",
-                                 "mark_defs" => [],
+                                 "markDefs" => [],
                                  "children" => [
                                    %{
                                      "_key" => "7e94398f8aea",
                                      "_type" => "block",
                                      "level" => 3,
                                      "listItem" => "bullet",
-                                     "mark_defs" => [],
+                                     "markDefs" => [],
                                      "style" => "normal",
                                      "children" => [
                                        %{

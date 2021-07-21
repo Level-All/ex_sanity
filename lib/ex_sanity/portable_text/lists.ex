@@ -123,7 +123,7 @@ defmodule ExSanity.PortableText.Lists do
       "level" => block["level"],
       "listItem" => block["listItem"],
       "children" => [block],
-      "mark_defs" => block["mark_defs"]
+      "markDefs" => block["markDefs"]
     }
   end
 end
