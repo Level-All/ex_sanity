@@ -1,11 +1,11 @@
 defmodule ExSanity.Client do
   use HTTPoison.Base
 
-  def project_id, do: ExSanity.config()[:sanity][:project_id]
-  def dataset, do: ExSanity.config()[:sanity][:dataset]
-  def api_key, do: ExSanity.config()[:sanity][:api_key]
-  def version, do: ExSanity.config()[:sanity][:version]
-  def endpoint, do: ExSanity.config()[:sanity][:endpoint]
+  def project_id, do: ExSanity.config()[:project_id]
+  def dataset, do: ExSanity.config()[:dataset]
+  def api_key, do: ExSanity.config()[:api_key]
+  def version, do: ExSanity.config()[:version]
+  def endpoint, do: ExSanity.config()[:endpoint]
 
   def root_url,
     do: "https://#{project_id()}.#{endpoint()}.sanity.io/#{version()}/data/query/#{dataset()}"

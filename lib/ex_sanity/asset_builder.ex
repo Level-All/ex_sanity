@@ -1,7 +1,7 @@
 defmodule ExSanity.AssetBuilder do
-  def file_base, do: ExSanity.config()[:sanity][:file_base]
-  def project_id, do: ExSanity.config()[:sanity][:project_id]
-  def dataset, do: ExSanity.config()[:sanity][:dataset]
+  def file_base, do: ExSanity.config()[:file_base]
+  def project_id, do: ExSanity.config()[:project_id]
+  def dataset, do: ExSanity.config()[:dataset]
 
   def image_url(image_asset_or_url), do: build_url(image_asset_or_url, fn asset -> build_image_url(asset) end)
   def file_url(file_asset_or_url), do: build_url(file_asset_or_url, fn asset -> build_file_url(asset) end)
