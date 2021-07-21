@@ -46,8 +46,8 @@ defmodule ExSanity.PortableText.Serializers do
     content_tag(Utils.style_to_atom(style), render_children(children, mark_defs))
   end
 
-  def image_serializer(asset = %{"asset" => %{"_ref" => _ref}}) do
-    url = ExSanity.AssetBuilder.build_image_url(asset)
+  def image_serializer(%{"asset" => %{"_ref" => ref}}) do
+    url = ExSanity.AssetBuilder.build_image_url(ref)
     img_tag(url)
   end
 
