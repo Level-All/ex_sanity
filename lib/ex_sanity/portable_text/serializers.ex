@@ -34,15 +34,17 @@ defmodule ExSanity.PortableText.Serializers do
     render_marks_map(marks, mark_defs) |> render_nested_marks(text)
   end
 
-  def list_serializer(%{"children" => children, "mark_defs" => mark_defs, "listItem" => list_item}) do
+  @spec list_serializer(map) ::
+          {:safe, [binary | maybe_improper_list(any, binary | []) | 47 | 60 | 62, ...]}
+  def list_serializer(%{"children" => children, "markDefs" => mark_defs, "listItem" => list_item}) do
     content_tag(Utils.list_item_to_atom(list_item), render_children(children, mark_defs))
   end
 
-  def list_item_serializer(%{"children" => children, "mark_defs" => mark_defs}) do
+  def list_item_serializer(%{"children" => children, "markDefs" => mark_defs}) do
     content_tag(:li, render_children(children, mark_defs))
   end
 
-  def block_serializer(%{"_type" => "block", "children" => children, "mark_defs" => mark_defs, "style" => style}) do
+  def block_serializer(%{"_type" => "block", "children" => children, "markDefs" => mark_defs, "style" => style}) do
     content_tag(Utils.style_to_atom(style), render_children(children, mark_defs))
   end
 

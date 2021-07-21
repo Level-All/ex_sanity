@@ -13,7 +13,7 @@ defmodule ExSanity.PortableText do
 
   def render_node(
      node = %{
-       "mark_defs" => mark_defs
+       "markDefs" => mark_defs
      }
    ), do: match_node(node, mark_defs)
 
