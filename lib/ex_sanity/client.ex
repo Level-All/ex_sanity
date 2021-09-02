@@ -21,6 +21,11 @@ defmodule ExSanity.Client do
     |> handle_response()
   end
 
+  def query(query, method: :post) do
+    post("", %{query: query}, headers())
+    |> handle_response()
+  end
+
   def handle_response(response) do
     case response do
       {:ok, %HTTPoison.Response{body: {:error, :could_not_parse}, status_code: status}} ->
@@ -39,21 +44,18 @@ defmodule ExSanity.Client do
 
   def process_request_url(url), do: root_url() <> url
 
-  def process_request_body(body) do
-    if body == "" do
-      ""
-    else
-      URI.encode_query(body)
-    end
-  end
+  def process_request_body(body), do: body |> Jason.encode!()
 
   def process_response_body(body) do
     if body == "" do
       %{}
     else
       case Jason.decode(body) do
-        {:ok, body} -> body
-        _ -> {:error, :could_not_parse}
+        {:ok, body} ->
+          body
+
+        _ ->
+          {:error, :could_not_parse}
       end
     end
   end
