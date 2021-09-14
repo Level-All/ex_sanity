@@ -53,16 +53,16 @@ defmodule ExSanity.PortableText.Serializers do
     content_tag(:a, content, href: mark_def["href"])
   end
 
-  def render_children(serializer_defs, children, mark_defs) do
-    Enum.map(children, fn child -> ExSanity.PortableText.render_node(serializer_defs, child, mark_defs) end)
+  def render_children(serializers, children, mark_defs) do
+    Enum.map(children, fn child -> ExSanity.PortableText.render_node(serializers, child, mark_defs) end)
   end
 
   # Generates a map of anonymous functions which
   # return a content_tag with a specified tag
   # and content argument.
   # This map can be reduced to generate nested marks (e.g. <ul><b>...</b></ul>)
-  def render_marks_map(serializer_defs, marks, mark_defs) do
-    Enum.map(marks, fn mark -> (fn content -> render_mark(serializer_defs, mark, mark_defs, content) end) end)
+  def render_marks_map(serializers, marks, mark_defs) do
+    Enum.map(marks, fn mark -> (fn content -> render_mark(serializers, mark, mark_defs, content) end) end)
   end
 
   # Takes a map of anonymous functions which return a content_tag
@@ -71,21 +71,21 @@ defmodule ExSanity.PortableText.Serializers do
   end
 
   # Renders a content_tag with atom, and content
-  def render_mark(serializer_defs, mark, mark_defs, content) do
+  def render_mark(serializers, mark, mark_defs, content) do
     if Enum.member?(@default_marks, mark) do
       content_tag(Utils.mark_to_atom(mark), content)
     else
       mark_def = Enum.find(mark_defs, fn mark_def -> mark_def["_key"] == mark end)
-      render_custom_mark(serializer_defs, mark_def, content)
+      render_custom_mark(serializers, mark_def, content)
     end
   end
 
-  def render_custom_mark(serializer_defs, mark_def = %{"_type" => type}, content) do
-    mark_serializers = serializer_defs[:marks]
+  def render_custom_mark(serializers, mark_def = %{"_type" => type}, content) do
+    mark_serializers = serializers[:marks]
     type_as_atom = String.to_atom(type)
 
     if Map.has_key?(mark_serializers, type_as_atom) do
-      mark_serializers[type_as_atom].(serializer_defs, mark_def, content)
+      mark_serializers[type_as_atom].(serializers, mark_def, content)
     else
       raise "a custom serializer for type: #{type} could not be found"
     end
