@@ -636,6 +636,79 @@ defmodule ExSanity.PortableTextTest do
     end
   end
 
+  describe("to_html/2") do
+    test "renders block type with custom serializer override" do
+      custom_serializers = %{
+        block: fn _serializer_defs, _block, _mark_defs -> "some custom text" end
+      }
+
+      block = [
+        %{
+          "_key" => "7e08e718fa43",
+          "_type" => "block",
+          "children" => [
+            %{
+              "_key" => "b90a808df999",
+              "_type" => "span",
+              "marks" => [],
+              "text" => "Hello!"
+            }
+          ],
+          "markDefs" => [],
+          "style" => "normal"
+        }
+      ]
+
+      html = ExSanity.PortableText.to_html(block, custom_serializers) |> safe_to_string()
+
+      assert html == "<div>some custom text</div>"
+    end
+
+    test "renders custom mark with custom serializer override" do
+      custom_serializers = %{
+        marks: %{
+          link: fn _serializers, _node, _mark_defs -> "some custom text" end
+        }
+      }
+
+      block_with_custom_mark = [
+        %{
+          "_key" => "007988308ea1",
+          "_type" => "block",
+          "children" => [
+            %{
+              "_key" => "1cf204f13e6c",
+              "_type" => "span",
+              "marks" => [],
+              "text" => "Hello, how are you? "
+            },
+            %{
+              "_key" => "e8e151d4064b",
+              "_type" => "span",
+              "marks" => [
+                "04dd8390b9ed"
+              ],
+              "text" => "Go here"
+            }
+          ],
+          "markDefs" => [
+            %{
+              "_key" => "04dd8390b9ed",
+              "_type" => "link",
+              "href" => "www.google.com"
+            }
+          ],
+          "style" => "normal"
+        }
+      ]
+
+      html = ExSanity.PortableText.to_html(block_with_custom_mark, custom_serializers) |> safe_to_string()
+
+      assert html ==
+               "<div><p>Hello, how are you? some custom text</p></div>"
+    end
+  end
+
   describe("with_blocks/1") do
     test "returns array of blocks with no list blocks" do
       raw_blocks = [
