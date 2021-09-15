@@ -30,7 +30,14 @@ defmodule ExSanity.PortableText do
       %{"_type" => "block", "children" => _, "listItem" => _} -> serializers[:list_item].(serializers, node, mark_defs)
       %{"_type" => "block"} -> serializers[:block].(serializers, node, mark_defs)
       %{"_type" => "image"} -> serializers[:image].(serializers, node, mark_defs)
-      %{"_type" => type} -> serializers[String.to_atom(type)].(serializers, node, mark_defs)
+      %{"_type" => type} ->
+        type_as_atom = String.to_atom(type)
+
+        if Map.has_key?(serializers, type_as_atom) do
+          serializers[type_as_atom].(serializers, node, mark_defs)
+        else
+          {:safe, []}
+        end
     end
   end
 
