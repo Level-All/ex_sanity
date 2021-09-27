@@ -75,8 +75,10 @@ defmodule ExSanity.PortableText.Serializers do
     if Enum.member?(@default_marks, mark) do
       content_tag(Utils.mark_to_atom(mark), content)
     else
-      mark_def = Enum.find(mark_defs, fn mark_def -> mark_def["_key"] == mark end)
-      render_custom_mark(serializers, mark_def, content)
+      case Enum.find(mark_defs, fn mark_def -> mark_def["_key"] == mark end) do
+        nil -> render_custom_mark(serializers, mark, content)
+        mark_def -> render_custom_mark(serializers, mark_def, content)
+      end
     end
   end
 
@@ -88,6 +90,17 @@ defmodule ExSanity.PortableText.Serializers do
       mark_serializers[type_as_atom].(serializers, mark_def, content)
     else
       raise "a custom serializer for type: #{type} could not be found"
+    end
+  end
+
+  def render_custom_mark(serializers, mark, content) do
+    mark_serializers = serializers[:marks]
+    type_as_atom = String.to_atom(mark)
+
+    if Map.has_key?(mark_serializers, type_as_atom) do
+      mark_serializers[type_as_atom].(serializers, mark, content)
+    else
+      raise "a custom serializer for mark: #{mark} could not be found"
     end
   end
 end
