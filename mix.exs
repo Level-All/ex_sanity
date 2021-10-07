@@ -21,9 +21,9 @@ defmodule ExSanity.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:jason, "~> 1.1"},
-      {:httpoison, "~> 1.8"},
-      {:phoenix_html, "~> 2.14.2"}
+      {:jason, ">= 1.1.0"},
+      {:httpoison, ">= 1.8.0"},
+      {:phoenix_html, ">= 2.14.2"}
     ]
   end
 end
