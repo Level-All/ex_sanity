@@ -27,6 +27,89 @@ defmodule ExSanity.PortableTextTest do
       assert html == "<div><p>Hello!</p></div>"
     end
 
+    test "respects false container config" do
+      block = [
+        %{
+          "_key" => "1",
+          "_type" => "block",
+          "children" => [
+            %{
+              "_key" => "a",
+              "_type" => "span",
+              "marks" => [],
+              "text" => "One"
+            }
+          ],
+          "markDefs" => [],
+          "style" => "normal"
+        },
+        %{
+          "_key" => "2",
+          "_type" => "block",
+          "children" => [
+            %{
+              "_key" => "b",
+              "_type" => "span",
+              "marks" => [],
+              "text" => "Two"
+            }
+          ],
+          "markDefs" => [],
+          "style" => "normal"
+        }
+      ]
+
+      html = ExSanity.PortableText.to_html(block, %{ container: false })
+      |> Enum.map(&safe_to_string/1)
+      |> Enum.join()
+
+      assert html == "<p>One</p><p>Two</p>"
+    end
+
+    test "respects function container config" do
+      block = [
+        %{
+          "_key" => "1",
+          "_type" => "block",
+          "children" => [
+            %{
+              "_key" => "a",
+              "_type" => "span",
+              "marks" => [],
+              "text" => "One"
+            }
+          ],
+          "markDefs" => [],
+          "style" => "normal"
+        },
+        %{
+          "_key" => "2",
+          "_type" => "block",
+          "children" => [
+            %{
+              "_key" => "b",
+              "_type" => "span",
+              "marks" => [],
+              "text" => "Two"
+            }
+          ],
+          "markDefs" => [],
+          "style" => "normal"
+        }
+      ]
+
+      html = ExSanity.PortableText.to_html(block, %{
+        container: fn (nodes) ->
+          html = nodes
+          |> Enum.map(&safe_to_string/1)
+          |> Enum.join()
+          "<div class='test'>#{html}</div>"
+        end
+      })
+
+      assert html == "<div class='test'><p>One</p><p>Two</p></div>"
+    end
+
     test "renders block with single mark" do
       block_with_mark = [
         %{
@@ -659,7 +742,9 @@ defmodule ExSanity.PortableTextTest do
         }
       ]
 
-      html = ExSanity.PortableText.to_html(block, custom_serializers) |> safe_to_string()
+      html = ExSanity.PortableText.to_html(block, %{
+        serializers: custom_serializers
+      }) |> safe_to_string()
 
       assert html == "<div>some custom text</div>"
     end
@@ -702,7 +787,9 @@ defmodule ExSanity.PortableTextTest do
         }
       ]
 
-      html = ExSanity.PortableText.to_html(block_with_custom_mark, custom_serializers) |> safe_to_string()
+      html = ExSanity.PortableText.to_html(block_with_custom_mark, %{
+        serializers: custom_serializers
+      }) |> safe_to_string()
 
       assert html ==
                "<div><p>Hello, how are you? some custom text</p></div>"

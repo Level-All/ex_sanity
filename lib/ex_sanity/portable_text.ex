@@ -3,16 +3,25 @@ defmodule ExSanity.PortableText do
 
   alias ExSanity.PortableText.{Serializers, Lists}
 
-  def to_html(nodes, custom_serializers \\ %{}) do
+  def to_html(nodes, options \\ %{}) do
     base_serializers = Serializers.serializers()
-    serializers = merge_serializers(base_serializers, custom_serializers)
 
-    render_container(nodes |> Lists.with_list_blocks() |> Enum.map(fn node -> render_node(serializers, node) end))
+    serializers =
+      if options[:serializers] do
+        merge_serializers(base_serializers, options[:serializers])
+      else
+        base_serializers
+      end
+
+    nodes
+    |> Lists.with_list_blocks()
+    |> Enum.map(fn node -> render_node(serializers, node) end)
+    |> render_container(options[:container])
   end
 
-  def render_container(children) do
-    content_tag(:div, children)
-  end
+  def render_container(children, container = nil), do: content_tag(:div, children)
+  def render_container(children, container = false), do: children
+  def render_container(children, container) when is_function(container), do: container.(children)
 
   def render_node(
     serializers,
