@@ -54,7 +54,7 @@ defmodule ExSanity.PortableText.Serializers do
 
   def image_serializer(image = %{"asset" => %{"_ref" => ref}}) do
     image
-    |> ExSanity.AssetBuilder.url_for_image!()
+    |> ExSanity.Assets.url_for_image!()
     |> img_tag()
   end
 

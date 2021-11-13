@@ -1,15 +1,15 @@
-defmodule ExSanity.AssetBuilderTest do
+defmodule ExSanity.AssetsTest do
   use ExUnit.Case
 
   def image_base do
-    "#{ExSanity.AssetBuilder.file_base()}/images/#{ExSanity.AssetBuilder.project_id()}/#{
-      ExSanity.AssetBuilder.dataset()
+    "#{ExSanity.Config.resolve(:file_base)}/images/#{ExSanity.Config.resolve(:project_id)}/#{
+      ExSanity.Config.resolve(:dataset)
     }"
   end
 
   def file_base do
-    "#{ExSanity.AssetBuilder.file_base()}/files/#{ExSanity.AssetBuilder.project_id()}/#{
-      ExSanity.AssetBuilder.dataset()
+    "#{ExSanity.Config.resolve(:file_base)}/files/#{ExSanity.Config.resolve(:project_id)}/#{
+      ExSanity.Config.resolve(:dataset)
     }"
   end
 
@@ -178,7 +178,7 @@ defmodule ExSanity.AssetBuilderTest do
   describe "url_for_file/1" do
     test "handles asset _ref" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_file(%{
+        ExSanity.Assets.url_for_file(%{
           source: %{
             "_type" => "file",
             "asset" => %{
@@ -196,7 +196,7 @@ defmodule ExSanity.AssetBuilderTest do
       source = "https://cdn.sanity.io/files/123/test/88a39460f9a23f524ae80688fff8464b40e4e8ec.mp3"
 
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_file(%{
+        ExSanity.Assets.url_for_file(%{
           source: %{
             "_type" => "file",
             "asset" => %{
@@ -211,7 +211,7 @@ defmodule ExSanity.AssetBuilderTest do
 
     test "can pass source directly" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_file(%{
+        ExSanity.Assets.url_for_file(%{
           "_type" => "file",
           "asset" => %{
             "_type" => "reference",
@@ -226,14 +226,14 @@ defmodule ExSanity.AssetBuilderTest do
 
   describe "url_for_image/1" do
     test "does not crop when no crop is required" do
-      {:ok, url} = ExSanity.AssetBuilder.url_for_image(%{source: uncropped_image()})
+      {:ok, url} = ExSanity.Assets.url_for_image(%{source: uncropped_image()})
 
       assert URI.decode(url) == "#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg"
     end
 
     test "does does not crop, but limits size when only width dimension is specified" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_image(%{
+        ExSanity.Assets.url_for_image(%{
           source: uncropped_image(),
           transforms: %{
             width: 100
@@ -245,7 +245,7 @@ defmodule ExSanity.AssetBuilderTest do
 
     test "does does not crop, but limits size when only height dimension is specified" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_image(%{
+        ExSanity.Assets.url_for_image(%{
           source: uncropped_image(),
           transforms: %{
             height: 100
@@ -257,7 +257,7 @@ defmodule ExSanity.AssetBuilderTest do
 
     test "a tall crop is centered on the hotspot" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_image(%{
+        ExSanity.Assets.url_for_image(%{
           source: uncropped_image(),
           transforms: %{
             width: 30,
@@ -271,7 +271,7 @@ defmodule ExSanity.AssetBuilderTest do
 
     test "a wide crop is centered on the hotspot" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_image(%{
+        ExSanity.Assets.url_for_image(%{
           source: uncropped_image(),
           transforms: %{
             width: 100,
@@ -285,7 +285,7 @@ defmodule ExSanity.AssetBuilderTest do
 
     test "a crop with identical aspect and no specified crop is not cropped" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_image(%{
+        ExSanity.Assets.url_for_image(%{
           source: uncropped_image(),
           transforms: %{
             width: 200,
@@ -299,7 +299,7 @@ defmodule ExSanity.AssetBuilderTest do
 
     test "respects the crop, even when no explicit crop is asked for" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_image(%{
+        ExSanity.Assets.url_for_image(%{
           source: cropped_image(),
           transforms: %{}
         })
@@ -310,7 +310,7 @@ defmodule ExSanity.AssetBuilderTest do
 
     test "a tall crop is centered on the hotspot and constrained within the image crop" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_image(%{
+        ExSanity.Assets.url_for_image(%{
           source: cropped_image(),
           transforms: %{
             width: 30,
@@ -324,7 +324,7 @@ defmodule ExSanity.AssetBuilderTest do
 
     test "ignores the image crop if caller specifies another" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_image(%{
+        ExSanity.Assets.url_for_image(%{
           source: cropped_image(),
           transforms: %{
             width: 30,
@@ -339,7 +339,7 @@ defmodule ExSanity.AssetBuilderTest do
 
     test "gracefully handles a non-hotspot image" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_image(%{
+        ExSanity.Assets.url_for_image(%{
           source: no_hotspot_image(),
           transforms: %{
             height: 100
@@ -352,7 +352,7 @@ defmodule ExSanity.AssetBuilderTest do
 
     test "gracefully handles materialized asset" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_image(%{
+        ExSanity.Assets.url_for_image(%{
           source: materialized_asset_with_crop(),
           transforms: %{
             height: 100
@@ -365,7 +365,7 @@ defmodule ExSanity.AssetBuilderTest do
 
     test "gracefully handles rounding errors" do
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_image(%{
+        ExSanity.Assets.url_for_image(%{
           source: cropped_portrait_image_rounding(),
           transforms: %{
             width: 400,
@@ -377,7 +377,7 @@ defmodule ExSanity.AssetBuilderTest do
                "#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2555x3833.jpg?w=400&h=600"
 
       {:ok, url} =
-        ExSanity.AssetBuilder.url_for_image(%{
+        ExSanity.Assets.url_for_image(%{
           source: cropped_landscape_image_rounding(),
           transforms: %{
             width: 600,

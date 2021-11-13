@@ -1,4 +1,4 @@
-defmodule ExSanity.AssetBuilder do
+defmodule ExSanity.Assets do
   @spec_name_to_url_name_mapping [
     {:width, "w"},
     {:height, "h"},
