@@ -28,21 +28,34 @@ defmodule ExSanity.PortableText.Serializers do
     render_marks_map(serializers, marks, mark_defs) |> render_nested_marks(text)
   end
 
-  def list_serializer(serializers, %{"children" => children, "markDefs" => mark_defs, "listItem" => list_item}) do
-    content_tag(Utils.list_item_to_atom(list_item), render_children(serializers, children, mark_defs))
+  def list_serializer(serializers, %{
+        "children" => children,
+        "markDefs" => mark_defs,
+        "listItem" => list_item
+      }) do
+    content_tag(
+      Utils.list_item_to_atom(list_item),
+      render_children(serializers, children, mark_defs)
+    )
   end
 
   def list_item_serializer(serializers, %{"children" => children, "markDefs" => mark_defs}) do
     content_tag(:li, render_children(serializers, children, mark_defs))
   end
 
-  def block_serializer(serializers, %{"_type" => "block", "children" => children, "markDefs" => mark_defs, "style" => style}) do
+  def block_serializer(serializers, %{
+        "_type" => "block",
+        "children" => children,
+        "markDefs" => mark_defs,
+        "style" => style
+      }) do
     content_tag(Utils.style_to_atom(style), render_children(serializers, children, mark_defs))
   end
 
-  def image_serializer(%{"asset" => %{"_ref" => ref}}) do
-    url = ExSanity.AssetBuilder.build_image_url(ref)
-    img_tag(url)
+  def image_serializer(image = %{"asset" => %{"_ref" => ref}}) do
+    image
+    |> ExSanity.AssetBuilder.url_for_image!()
+    |> img_tag()
   end
 
   def image_serializer(%{"asset" => %{"url" => url}}) do
@@ -54,7 +67,9 @@ defmodule ExSanity.PortableText.Serializers do
   end
 
   def render_children(serializers, children, mark_defs) do
-    Enum.map(children, fn child -> ExSanity.PortableText.render_node(serializers, child, mark_defs) end)
+    Enum.map(children, fn child ->
+      ExSanity.PortableText.render_node(serializers, child, mark_defs)
+    end)
   end
 
   # Generates a map of anonymous functions which
@@ -62,7 +77,9 @@ defmodule ExSanity.PortableText.Serializers do
   # and content argument.
   # This map can be reduced to generate nested marks (e.g. <ul><b>...</b></ul>)
   def render_marks_map(serializers, marks, mark_defs) do
-    Enum.map(marks, fn mark -> (fn content -> render_mark(serializers, mark, mark_defs, content) end) end)
+    Enum.map(marks, fn mark ->
+      fn content -> render_mark(serializers, mark, mark_defs, content) end
+    end)
   end
 
   # Takes a map of anonymous functions which return a content_tag
