@@ -69,6 +69,29 @@ defmodule ExSanity.AssetsTest do
     }
   end
 
+  def asset_with_url do
+    %{
+      "_type" => "image",
+      "asset" => %{
+        "_type" => "sanity.imageAsset",
+        "url" =>
+          "https://cdn.sanity.io/images/ppsg7ml5/test/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg"
+      },
+      "crop" => %{
+        "bottom" => 0.1,
+        "left" => 0.1,
+        "right" => 0.1,
+        "top" => 0.1
+      },
+      "hotspot" => %{
+        "height" => 0.3,
+        "width" => 0.3,
+        "x" => 0.3,
+        "y" => 0.3
+      }
+    }
+  end
+
   def cropped_image do
     %{
       "_type" => "image",
@@ -145,15 +168,6 @@ defmodule ExSanity.AssetsTest do
     }
   end
 
-  def asset_with_url do
-    %{
-      "asset" => %{
-        "url" =>
-          'https://cdn.sanity.io/images/ppsg7ml5/test/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg'
-      }
-    }
-  end
-
   def asset_document do
     %{
       "_id" => "image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000-jpg",
@@ -225,6 +239,52 @@ defmodule ExSanity.AssetsTest do
   end
 
   describe "url_for_image/1" do
+    test "gracefully handles malformed url" do
+      assert {:error, :malformed_asset} ==
+               ExSanity.Assets.url_for_image(%{
+                 source: %{
+                   "_type" => "image",
+                   "asset" => %{
+                     "_ref" => "image-Tb9Ew8CXIwaY6R1kjMvI0uRR-NotxNumber-jpg",
+                     "_type" => "reference"
+                   }
+                 }
+               })
+
+      assert {:error, :malformed_asset} ==
+               ExSanity.Assets.url_for_image(%{
+                 source: %{
+                   "_type" => "image",
+                   "asset" => %{
+                     "_ref" => "nope",
+                     "_type" => "reference"
+                   }
+                 }
+               })
+
+      assert {:error, :malformed_asset} ==
+               ExSanity.Assets.url_for_image(%{
+                 source: %{
+                   "_type" => "image",
+                   "asset" => %{
+                     "_id" => "nope",
+                     "_type" => "reference"
+                   }
+                 }
+               })
+
+      assert {:error, :malformed_asset} ==
+               ExSanity.Assets.url_for_image(%{
+                 source: %{
+                   "_type" => "image",
+                   "asset" => %{
+                     "_ref" => "Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x1000-jpg",
+                     "_type" => "reference"
+                   }
+                 }
+               })
+    end
+
     test "does not crop when no crop is required" do
       {:ok, url} = ExSanity.Assets.url_for_image(%{source: uncropped_image()})
 
@@ -350,10 +410,114 @@ defmodule ExSanity.AssetsTest do
                "#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg?h=100"
     end
 
+    test "formats flip params correctly" do
+      {:ok, url} =
+        ExSanity.Assets.url_for_image(%{
+          source: no_hotspot_image(),
+          transforms: %{
+            flip_horizontal: true
+          }
+        })
+
+      assert URI.decode(url) ==
+               "#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg?flip=h"
+
+      {:ok, url} =
+        ExSanity.Assets.url_for_image(%{
+          source: no_hotspot_image(),
+          transforms: %{
+            flip_vertical: true
+          }
+        })
+
+      assert URI.decode(url) ==
+               "#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg?flip=v"
+
+      {:ok, url} =
+        ExSanity.Assets.url_for_image(%{
+          source: no_hotspot_image(),
+          transforms: %{
+            flip_horizontal: true,
+            flip_vertical: true
+          }
+        })
+
+      assert URI.decode(url) ==
+               "#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg?flip=hv"
+    end
+
+    test "formats focal point params correctly" do
+      {:ok, url} =
+        ExSanity.Assets.url_for_image(%{
+          source: no_hotspot_image(),
+          transforms: %{
+            focal_point: %{
+              x: 0.5,
+              y: 1
+            }
+          }
+        })
+
+      assert URI.decode(url) ==
+               "#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg?fp-x=0.5&fp-y=1"
+    end
+
+    test "formats snakecase params" do
+      {:ok, url} =
+        ExSanity.Assets.url_for_image(%{
+          source: no_hotspot_image(),
+          transforms: %{
+            format: :png
+          }
+        })
+
+      assert URI.decode(url) ==
+               "#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg?fm=png"
+    end
+
+    test "formats url params with original names" do
+      {:ok, url} =
+        ExSanity.Assets.url_for_image(%{
+          source: no_hotspot_image(),
+          transforms: %{
+            "min-w": 200
+          }
+        })
+
+      assert URI.decode(url) ==
+               "#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg?min-w=200"
+    end
+
+    test "removes invalid params" do
+      {:ok, url} =
+        ExSanity.Assets.url_for_image(%{
+          source: no_hotspot_image(),
+          transforms: %{
+            test: 1
+          }
+        })
+
+      assert URI.decode(url) ==
+               "#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg"
+    end
+
     test "gracefully handles materialized asset" do
       {:ok, url} =
         ExSanity.Assets.url_for_image(%{
           source: materialized_asset_with_crop(),
+          transforms: %{
+            height: 100
+          }
+        })
+
+      assert URI.decode(url) ==
+               "#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg?rect=200,300,1600,2400&h=100"
+    end
+
+    test "gracefully handles asset with only url" do
+      {:ok, url} =
+        ExSanity.Assets.url_for_image(%{
+          source: asset_with_url(),
           transforms: %{
             height: 100
           }

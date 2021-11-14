@@ -7,13 +7,13 @@ defmodule ExSanity.PortableText.Serializers do
 
   def get_serializer(serializers, keys), do: get_in(serializers, keys)
 
-  def serializers do
+  def serializers(options \\ %{}) do
     %{
       span: fn serializers, block, mark_defs -> span_serializer(serializers, block, mark_defs) end,
       list: fn serializers, block, _mark_defs -> list_serializer(serializers, block) end,
       block: fn serializers, block, _mark_defs -> block_serializer(serializers, block) end,
       list_item: fn serializers, block, _mark_defs -> list_item_serializer(serializers, block) end,
-      image: fn _serializers, block, _mark_defs -> image_serializer(block) end,
+      image: fn _serializers, block, _mark_defs -> image_serializer(block, options) end,
       marks: %{
         link: fn _serializers, block, mark_defs -> link_serializer(block, mark_defs) end
       }
@@ -52,15 +52,32 @@ defmodule ExSanity.PortableText.Serializers do
     content_tag(Utils.style_to_atom(style), render_children(serializers, children, mark_defs))
   end
 
-  def image_serializer(image = %{"asset" => %{"_ref" => ref}}) do
-    image
+  def image_serializer(source, options \\ %{})
+
+  def image_serializer(source = %{"asset" => %{"_id" => _id}}, options) do
+    %{source: source}
+    |> Map.merge(parse_image_options(options[:image_options]))
     |> ExSanity.Assets.url_for_image!()
     |> img_tag()
   end
 
-  def image_serializer(%{"asset" => %{"url" => url}}) do
-    img_tag(url)
+  def image_serializer(source = %{"asset" => %{"_ref" => _id}}, options) do
+    %{source: source}
+    |> Map.merge(parse_image_options(options[:image_options]))
+    |> ExSanity.Assets.url_for_image!()
+    |> img_tag()
   end
+
+  def image_serializer(source = %{"asset" => %{"url" => _url}}, options) do
+    %{source: source}
+    |> Map.merge(parse_image_options(options[:image_options]))
+    |> ExSanity.Assets.url_for_image!()
+    |> img_tag()
+  end
+
+  def parse_image_options(nil), do: %{}
+
+  def parse_image_options(opts), do: opts
 
   def link_serializer(mark_def, content) do
     content_tag(:a, content, href: mark_def["href"])

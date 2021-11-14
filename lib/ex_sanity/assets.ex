@@ -121,8 +121,6 @@ defmodule ExSanity.Assets do
         hotspot: hotspot,
         transforms: transforms
       })
-    else
-      err -> err
     end
   end
 
@@ -147,6 +145,7 @@ defmodule ExSanity.Assets do
      }}
   end
 
+  # Set defaults for hotspots.
   defp parse_hotspot(_) do
     {:ok,
      %{
@@ -172,7 +171,8 @@ defmodule ExSanity.Assets do
      }}
   end
 
-  defp parse_crop(nil) do
+  # Set defaults for crops.
+  defp parse_crop(_) do
     {:ok,
      %{
        bottom: 0,
@@ -189,40 +189,30 @@ defmodule ExSanity.Assets do
   defp parse_image_asset(%{
          "url" => url
        }) do
-    url
-    |> String.split("/")
-    |> List.last()
-    |> case do
-      ref when is_binary(ref) ->
-        "image-#{Regex.replace(~r/\.([a-z]+)$/, ref, "-\\1")}"
-        |> parse_image_ref
-
-      _ ->
-        {:error, :malformed_asset}
+    with ref when is_binary(ref) <- url |> String.split("/") |> List.last(),
+         with_extension <- Regex.replace(~r/\.([a-z]+)$/, ref, "-\\1") do
+      parse_image_ref("image-#{with_extension}")
+    else
+      _ -> {:error, :malformed_asset}
     end
   end
 
   defp parse_image_asset(_), do: {:error, :malformed_asset}
 
   defp parse_image_ref(ref) do
-    case String.split(ref, "-") do
-      [_type, id, width_x_height, format] ->
-        case String.split(width_x_height, "x") do
-          [width, height] ->
-            {:ok,
-             %{
-               id: id,
-               width: String.to_integer(width),
-               height: String.to_integer(height),
-               format: format
-             }}
-
-          _ ->
-            {:error, :malformed_asset}
-        end
-
-      _ ->
-        {:error, :malformed_asset}
+    with [_type, id, width_x_height, format] <- String.split(ref, "-"),
+         [str_width, str_height] <- String.split(width_x_height, "x"),
+         {width, _} <- Integer.parse(str_width),
+         {height, _} <- Integer.parse(str_height) do
+      {:ok,
+       %{
+         id: id,
+         width: width,
+         height: height,
+         format: format
+       }}
+    else
+      _ -> {:error, :malformed_asset}
     end
   end
 
@@ -263,7 +253,8 @@ defmodule ExSanity.Assets do
           transforms: transforms
         })
 
-      Map.merge(%{asset: asset}, fitted)
+      %{asset: asset}
+      |> Map.merge(Map.merge(transforms, fitted))
       |> spec_to_image_url()
     else
       spec_to_image_url(Map.merge(%{asset: asset}, transforms))
@@ -421,48 +412,26 @@ defmodule ExSanity.Assets do
 
   defp spec_to_image_url(
          spec = %{
-           asset: %{
-             id: id,
-             width: width,
-             height: height,
-             format: format
-           }
+           asset:
+             asset = %{
+               id: id,
+               width: width,
+               height: height,
+               format: format
+             }
          }
        ) do
     filename = "#{id}-#{width}x#{height}.#{format}"
     base_url = "#{file_base()}/images/#{project_id()}/#{dataset()}/#{filename}"
 
-    rect_param =
-      if spec[:rect] do
-        # Only bother url with a crop if it actually crops anything
-        %{left: rect_left, top: rect_top, width: rect_width, height: rect_height} = spec[:rect]
-
-        is_effective_crop =
-          rect_left !== 0 || rect_top !== 0 || rect_height !== height || rect_width !== width
-
-        if is_effective_crop do
-          {"rect", "#{rect_left},#{rect_top},#{rect_width},#{rect_height}"}
-        else
-          nil
-        end
-      else
-        nil
-      end
-
-    focal_point_param =
-      if spec[:focal_point] do
-        [{"fp-x", spec[:focal_point][:x]}, {"fp-y", spec[:focal_point][:y]}]
-      else
-        nil
-      end
+    rect_param = format_rect_param(asset, spec[:rect])
+    focal_point_param = format_focal_point_param(spec[:focal_point])
 
     flip_param =
-      if spec[:flip_horizontal] || spec[:flip_vertical] do
-        {"flip",
-         "#{if spec[:flip_horizontal], do: "h", else: ""}#{
-           if spec[:flip_vertical], do: "v", else: ""
-         }"}
-      end
+      format_flip_param(%{
+        flip_horizontal: spec[:flip_horizontal],
+        flip_vertical: spec[:flip_vertical]
+      })
 
     formatted_params =
       [
@@ -477,9 +446,17 @@ defmodule ExSanity.Assets do
     params =
       Enum.reduce(@spec_name_to_url_name_mapping, [], fn {transform_key, param_key}, params ->
         cond do
-          spec[transform_key] -> params ++ [{param_key, spec[transform_key]}]
-          spec[param_key] -> params ++ [{param_key, spec[spec[param_key]]}]
-          true -> params
+          spec[transform_key] ->
+            params ++ [{param_key, spec[transform_key]}]
+
+          spec[param_key] ->
+            params ++ [{param_key, spec[param_key]}]
+
+          spec[String.to_atom(param_key)] ->
+            params ++ [{param_key, spec[String.to_atom(param_key)]}]
+
+          true ->
+            params
         end
       end)
 
@@ -493,4 +470,28 @@ defmodule ExSanity.Assets do
 
     {:ok, image_url}
   end
+
+  defp format_rect_param(
+         _asset = %{height: height, width: width},
+         _rect_spec = %{left: rect_left, top: rect_top, width: rect_width, height: rect_height}
+       ) do
+    is_effective_crop =
+      rect_left !== 0 || rect_top !== 0 || rect_height !== height || rect_width !== width
+
+    if is_effective_crop do
+      {"rect", "#{rect_left},#{rect_top},#{rect_width},#{rect_height}"}
+    else
+      nil
+    end
+  end
+
+  defp format_rect_param(_, _), do: nil
+
+  defp format_focal_point_param(nil), do: nil
+  defp format_focal_point_param(%{x: x, y: y}), do: [{"fp-x", x}, {"fp-y", y}]
+
+  defp format_flip_param(%{flip_horizontal: nil, flip_vertical: nil}), do: nil
+  defp format_flip_param(%{flip_horizontal: _h, flip_vertical: nil}), do: {"flip", "h"}
+  defp format_flip_param(%{flip_horizontal: nil, flip_vertical: _v}), do: {"flip", "v"}
+  defp format_flip_param(%{flip_horizontal: _h, flip_vertical: _v}), do: {"flip", "hv"}
 end
