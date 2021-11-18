@@ -23,7 +23,8 @@ defmodule ExSanity.MixProject do
     [
       {:jason, ">= 1.1.0"},
       {:httpoison, ">= 1.8.0"},
-      {:phoenix_html, ">= 2.14.2"}
+      {:phoenix_html, ">= 2.14.2"},
+      {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false}
     ]
   end
 end

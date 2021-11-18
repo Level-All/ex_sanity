@@ -3,6 +3,12 @@ defmodule ExSanity.PortableTextTest do
 
   import Phoenix.HTML
 
+  def image_base do
+    "#{ExSanity.Config.resolve(:file_base)}/images/#{ExSanity.Config.resolve(:project_id)}/#{
+      ExSanity.Config.resolve(:dataset)
+    }"
+  end
+
   describe "to_html/1" do
     test "renders block" do
       block = [
@@ -59,9 +65,10 @@ defmodule ExSanity.PortableTextTest do
         }
       ]
 
-      html = ExSanity.PortableText.to_html(block, %{ container: false })
-      |> Enum.map(&safe_to_string/1)
-      |> Enum.join()
+      html =
+        ExSanity.PortableText.to_html(block, %{container: false})
+        |> Enum.map(&safe_to_string/1)
+        |> Enum.join()
 
       assert html == "<p>One</p><p>Two</p>"
     end
@@ -98,14 +105,17 @@ defmodule ExSanity.PortableTextTest do
         }
       ]
 
-      html = ExSanity.PortableText.to_html(block, %{
-        container: fn (nodes) ->
-          html = nodes
-          |> Enum.map(&safe_to_string/1)
-          |> Enum.join()
-          "<div class='test'>#{html}</div>"
-        end
-      })
+      html =
+        ExSanity.PortableText.to_html(block, %{
+          container: fn nodes ->
+            html =
+              nodes
+              |> Enum.map(&safe_to_string/1)
+              |> Enum.join()
+
+            "<div class='test'>#{html}</div>"
+          end
+        })
 
       assert html == "<div class='test'><p>One</p><p>Two</p></div>"
     end
@@ -266,14 +276,16 @@ defmodule ExSanity.PortableTextTest do
           "_key" => "3df88bd329dd",
           "_type" => "image",
           "asset" => %{
-            "url" => "https://www.image.com"
+            "url" =>
+              "https://cdn.sanity.io/images/ppsg7ml5/test/88a39460f9a23f524ae80688fff8464b40e4e8ec-1024x576.jpg"
           }
         }
       ]
 
       html = ExSanity.PortableText.to_html(custom_blocks) |> safe_to_string()
 
-      assert html == "<div><img src=\"https://www.image.com\"></div>"
+      assert html ==
+               "<div><img src=\"#{image_base()}/88a39460f9a23f524ae80688fff8464b40e4e8ec-1024x576.jpg\"></div>"
     end
 
     test "renders custom image block with asset -> _ref" do
@@ -290,7 +302,97 @@ defmodule ExSanity.PortableTextTest do
 
       html = ExSanity.PortableText.to_html(custom_blocks) |> safe_to_string()
 
-      assert html == "<div><img src=\"https://cdn.sanity.io/images/123/test/88a39460f9a23f524ae80688fff8464b40e4e8ec-1024x576.jpg\"></div>"
+      assert html ==
+               "<div><img src=\"https://cdn.sanity.io/images/123/test/88a39460f9a23f524ae80688fff8464b40e4e8ec-1024x576.jpg\"></div>"
+    end
+
+    test "renders custom image block with asset -> _id" do
+      custom_blocks = [
+        %{
+          "_key" => "3df88bd329dd",
+          "_type" => "image",
+          "asset" => %{
+            "_id" => "image-88a39460f9a23f524ae80688fff8464b40e4e8ec-1024x576-jpg"
+          }
+        }
+      ]
+
+      html = ExSanity.PortableText.to_html(custom_blocks) |> safe_to_string()
+
+      assert html ==
+               "<div><img src=\"#{image_base()}/88a39460f9a23f524ae80688fff8464b40e4e8ec-1024x576.jpg\"></div>"
+    end
+
+    test "accepts image_options and applies transforms to url" do
+      custom_blocks = [
+        %{
+          "_key" => "8b9ada80e403",
+          "_type" => "image",
+          "asset" => %{
+            "_ref" => "image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000-jpg",
+            "_type" => "reference"
+          }
+        }
+      ]
+
+      html =
+        ExSanity.PortableText.to_html(custom_blocks, %{
+          image_options: %{
+            transforms: %{
+              height: 500,
+              flip_horizontal: true,
+              focal_point: %{
+                x: 0.5,
+                y: 1
+              },
+              format: :png,
+              "max-w": 200
+            }
+          }
+        })
+        |> safe_to_string()
+
+      assert html ==
+               "<div><img src=\"#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg?fp-x=0.5&amp;fp-y=1&amp;flip=h&amp;h=500&amp;fm=png&amp;max-w=200\"></div>"
+    end
+
+    test "accepts crop and hotspot values and applies transforms to url" do
+      custom_blocks = [
+        %{
+          "_key" => "8b9ada80e403",
+          "_type" => "image",
+          "asset" => %{
+            "_ref" => "image-Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000-jpg",
+            "_type" => "reference"
+          },
+          "crop" => %{
+            "bottom" => 0.0,
+            "left" => 0,
+            "right" => 0,
+            "top" => 0
+          },
+          "hotspot" => %{
+            "height" => 0.3,
+            "width" => 0.3,
+            "x" => 0.3,
+            "y" => 0.3
+          }
+        }
+      ]
+
+      html =
+        ExSanity.PortableText.to_html(custom_blocks, %{
+          image_options: %{
+            transforms: %{
+              width: 30,
+              height: 100
+            }
+          }
+        })
+        |> safe_to_string()
+
+      assert html ==
+               "<div><img src=\"#{image_base()}/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg?rect=150%2C0%2C900%2C3000&amp;w=30&amp;h=100\"></div>"
     end
 
     test "renders list blocks" do
@@ -742,9 +844,11 @@ defmodule ExSanity.PortableTextTest do
         }
       ]
 
-      html = ExSanity.PortableText.to_html(block, %{
-        serializers: custom_serializers
-      }) |> safe_to_string()
+      html =
+        ExSanity.PortableText.to_html(block, %{
+          serializers: custom_serializers
+        })
+        |> safe_to_string()
 
       assert html == "<div>some custom text</div>"
     end
@@ -787,9 +891,11 @@ defmodule ExSanity.PortableTextTest do
         }
       ]
 
-      html = ExSanity.PortableText.to_html(block_with_custom_mark, %{
-        serializers: custom_serializers
-      }) |> safe_to_string()
+      html =
+        ExSanity.PortableText.to_html(block_with_custom_mark, %{
+          serializers: custom_serializers
+        })
+        |> safe_to_string()
 
       assert html ==
                "<div><p>Hello, how are you? some custom text</p></div>"
