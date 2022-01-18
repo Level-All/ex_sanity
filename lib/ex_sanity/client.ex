@@ -15,16 +15,33 @@ defmodule ExSanity.Client do
       Authorization: "Bearer #{api_key()}"
     }
 
-  def query(query) do
-    ("?" <> URI.encode_query(%{query: query}))
-    |> get(headers())
+  @default_options [method: :get]
+
+  def query(query, opts \\ @default_options) do
+    method = opts[:method]
+    params = make_params(query, method)
+    body = make_body(query, method)
+    headers = headers()
+    {_, options} = Keyword.split(opts, [:method])
+
+    request(%HTTPoison.Request{
+      method: method,
+      url: "",
+      body: body,
+      params: params,
+      headers: headers,
+      options: options
+    })
     |> handle_response()
   end
 
-  def query(query, method: :post) do
-    post("", %{query: query}, headers())
-    |> handle_response()
-  end
+  defp make_params(query, :get), do: %{query: query}
+
+  defp make_params(_query, :post), do: nil
+
+  defp make_body(_query, :get), do: ""
+
+  defp make_body(query, :post), do: %{query: query}
 
   def handle_response(response) do
     case response do
