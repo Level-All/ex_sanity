@@ -54,6 +54,10 @@ defmodule ExSanity.Client do
       {:ok, %HTTPoison.Response{body: %{"message" => message}, status_code: status}} ->
         {:error, %{code: status, message: message}}
 
+      {:ok,
+       %HTTPoison.Response{body: %{"error" => %{"type" => "timeoutError"}}, status_code: 524}} ->
+        {:error, :timeout}
+
       {:error, reason} ->
         {:error, reason}
     end
