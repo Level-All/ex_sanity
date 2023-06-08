@@ -5,7 +5,7 @@ defmodule ExSanity.MixProject do
     [
       app: :ex_sanity,
       version: "0.1.0",
-      elixir: "~> 1.11",
+      elixir: "~> 1.14.2",
       start_permanent: Mix.env() == :prod,
       deps: deps()
     ]
@@ -24,7 +24,8 @@ defmodule ExSanity.MixProject do
       {:jason, ">= 1.1.0"},
       {:httpoison, ">= 1.8.0"},
       {:phoenix_html, ">= 2.14.2"},
-      {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false}
+      {:mix_test_watch, "~> 1.0", only: [:dev, :test], runtime: false},
+      {:credo, "~> 1.7", only: [:dev, :test], runtime: false}
     ]
   end
 end
