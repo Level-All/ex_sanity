@@ -89,9 +89,15 @@ defmodule ExSanity.QueryTest do
              |> slice("0")
              |> build() == ~s(*[_type == "movie"] | order(_createdAt asc\)[0])
 
-      # *[_type == "movie"] | order(_createdAt desc)[0]
+      assert from(:movie)
+             |> order({:_createdAt, :desc})
+             |> slice("0")
+             |> build() == ~s(*[_type == "movie"] | order(_createdAt desc\)[0])
 
-      # *[_type == "movie"] | order(_createdAt asc)[0..9]
+      assert from(:movie)
+             |> order({:_createdAt, :asc})
+             |> slice("0..9")
+             |> build() == ~s(*[_type == "movie"] | order(_createdAt asc\)[0..9])
 
       # *[_type == "movie"][0..9] | order(_createdAt asc)
 
