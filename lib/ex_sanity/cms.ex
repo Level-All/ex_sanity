@@ -9,6 +9,9 @@ defmodule ExSanity.CMS do
   alias ExSanity.Client
   alias ExSanity.Query
 
+  @doc """
+  Get a specific document by ID.
+  """
   def get(query, id) do
     query_string = Query.build(query, id)
 
@@ -19,7 +22,12 @@ defmodule ExSanity.CMS do
     document
   end
 
-  def one(query) do
+  @doc """
+  Returns the first document that matches the given query.
+
+  May return nil.
+  """
+  def first(query) do
     query_string = Query.build(query)
 
     {:ok, response} = Client.query(query_string)
@@ -29,6 +37,9 @@ defmodule ExSanity.CMS do
     document
   end
 
+  @doc """
+  Returns all document matching the given query.
+  """
   def all(query) do
     query_string = Query.build(query)
 
