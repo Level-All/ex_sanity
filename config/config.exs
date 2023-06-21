@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :ex_sanity,
   file_base: "https://cdn.sanity.io",
@@ -8,4 +8,4 @@ config :ex_sanity,
   version: "xxx",
   endpoint: "xxx"
 
-import_config "#{Mix.env}.exs"
+import_config "#{Mix.env()}.exs"

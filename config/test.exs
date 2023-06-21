@@ -1,4 +1,4 @@
-use Mix.Config
+import Config
 
 config :ex_sanity,
   project_id: "123",
