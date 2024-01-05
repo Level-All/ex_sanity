@@ -4,9 +4,7 @@ defmodule ExSanity.PortableTextTest do
   import Phoenix.HTML
 
   def image_base do
-    "#{ExSanity.Config.resolve(:file_base)}/images/#{ExSanity.Config.resolve(:project_id)}/#{
-      ExSanity.Config.resolve(:dataset)
-    }"
+    "#{ExSanity.Config.resolve(:file_base)}/images/#{ExSanity.Config.resolve(:project_id)}/#{ExSanity.Config.resolve(:dataset)}"
   end
 
   describe "to_html/1" do

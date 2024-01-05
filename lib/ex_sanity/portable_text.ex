@@ -1,5 +1,5 @@
 defmodule ExSanity.PortableText do
-  import Phoenix.HTML.Tag
+  use PhoenixHTMLHelpers
 
   alias ExSanity.PortableText.{Serializers, Lists}
 
