@@ -2,15 +2,11 @@ defmodule ExSanity.AssetsTest do
   use ExUnit.Case
 
   def image_base do
-    "#{ExSanity.Config.resolve(:file_base)}/images/#{ExSanity.Config.resolve(:project_id)}/#{
-      ExSanity.Config.resolve(:dataset)
-    }"
+    "#{ExSanity.Config.resolve(:file_base)}/images/#{ExSanity.Config.resolve(:project_id)}/#{ExSanity.Config.resolve(:dataset)}"
   end
 
   def file_base do
-    "#{ExSanity.Config.resolve(:file_base)}/files/#{ExSanity.Config.resolve(:project_id)}/#{
-      ExSanity.Config.resolve(:dataset)
-    }"
+    "#{ExSanity.Config.resolve(:file_base)}/files/#{ExSanity.Config.resolve(:project_id)}/#{ExSanity.Config.resolve(:dataset)}"
   end
 
   def image_with_no_crop_specificed() do
@@ -185,7 +181,8 @@ defmodule ExSanity.AssetsTest do
       "path" => "images/ppsg7ml5/test/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg",
       "sha1hash" => "075b7c7a434870280dab6613b3bf687988e36d75",
       "size" => 12_233_794,
-      "url" => 'https://cdn.sanity.io/images/ppsg7ml5/test/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg'
+      "url" =>
+        ~c"https://cdn.sanity.io/images/ppsg7ml5/test/Tb9Ew8CXIwaY6R1kjMvI0uRR-2000x3000.jpg"
     }
   end
 
