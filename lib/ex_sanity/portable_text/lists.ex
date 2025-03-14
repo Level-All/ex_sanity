@@ -37,6 +37,12 @@ defmodule ExSanity.PortableText.Lists do
     prev_block = get_block_from_path(blocks, path)
 
     cond do
+      # If the previous block was not a list at all,
+      # create a new list block and navigate the path
+      # into it.
+      prev_block["level"] == nil ->
+        create_new_list_block(blocks, path, block)
+
       # If the block is a sibling block, push it to the end
       # of our current list, and increment our path.
       block["level"] === prev_block["level"] ->
@@ -67,12 +73,6 @@ defmodule ExSanity.PortableText.Lists do
           blocks: new_blocks,
           path: [iter + 1 | rest]
         }
-
-      # If the previous block was not a list at all,
-      # create a new list block and navigate the path
-      # into it.
-      prev_block["level"] == nil ->
-        create_new_list_block(blocks, path, block)
     end
   end
 
